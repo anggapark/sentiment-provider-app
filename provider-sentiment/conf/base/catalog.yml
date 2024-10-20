@@ -1,0 +1,48 @@
+telkom_df:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/MyTelkomsel-v2.csv
+
+xl_df:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/MyXL-v2.csv
+
+indosat_df:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/MyIM3-v2.csv
+
+smartfren_df:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/MySF-v2.csv
+
+indo-lexicon:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/colloquial-indonesian-lexicon-v3.csv
+
+app_review_df:
+  type: pandas.CSVDataset
+  filepath: data/02_intermediate/all_df.csv
+
+preprocessed_df:
+  type: pandas.CSVDataset
+  filepath: data/03_primary/preprocessed_df.csv
+
+X_train:
+  type: pandas.CSVDataset
+  filepath: data/04_feature/X_train.csv
+
+y_train:
+  type: pandas.CSVDataset
+  filepath: data/04_feature/y_train.csv
+
+X_test:
+  type: pandas.CSVDataset
+  filepath: data/04_feature/X_test.csv
+
+y_test:
+  type: pandas.CSVDataset
+  filepath: data/04_feature/y_test.csv
+
+classification_model:
+  type: pickle.PickleDataset
+  filepath: data/06_models/clf.pickle
+  versioned: true
