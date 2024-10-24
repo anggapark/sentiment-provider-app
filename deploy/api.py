@@ -9,9 +9,10 @@ from preprocessing import (
 )
 from sklearn.metrics import f1_score
 
+# initialize fastapi instance
 app = FastAPI()
 
-# load model
+# load trained model
 with open(
     "/mnt/c/Users/hi/work/project/sentiment-provider-app/provider-sentiment/data/06_models/clf.pickle/2024-10-20T09.46.57.785Z/clf.pickle",
     "rb",
@@ -19,10 +20,12 @@ with open(
     model = pickle.load(file)
 
 
+# define input data format
 class InputText(BaseModel):
     text: str
 
 
+# creating prediction route
 @app.post("/predict")
 def predict_sentiment(input_text: InputText):
     text = input_text.text
