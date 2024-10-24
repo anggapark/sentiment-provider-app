@@ -347,3 +347,27 @@ def preprocessing_texts(df: pd.DataFrame) -> pd.DataFrame:
     df["sentiment"] = df["sentiment"].apply(encode_label)
 
     return df
+
+
+# Preprocessing function
+def preprocessing_sentence(texts: str) -> str:
+    """Applies a preprocessing text pipeline to clean input sentence for deploy.
+
+    Args:
+        texts (str): The original texts user input
+    Returns:
+        str: clean texts input ready for as model input
+    """
+
+    texts = remove_urls(texts)
+    texts = lowercase(texts)
+    texts = remove_non_ascii(texts)
+    texts = add_space_after_punctuation(texts)
+    texts = remove_punctuation(texts)
+    texts = replace_slang(texts)
+    texts = stemmer(texts)
+    texts = remove_irrelevant_words(texts)
+    texts = normalize_repeated_characters(texts)
+    texts = remove_review_less_than_n_words(texts, 2)
+
+    return texts
