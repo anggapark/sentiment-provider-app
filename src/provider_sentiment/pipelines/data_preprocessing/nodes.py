@@ -32,6 +32,12 @@ def combine_dataset(
     indosat_df: pd.DataFrame,
     smartfren_df: pd.DataFrame,
 ) -> pd.DataFrame:
+    # add provider before mergine for analysis
+    telkom_df["provider"] = "telkomsel"
+    xl_df["provider"] = "xl"
+    indosat_df["provider"] = "indosat"
+    smartfren_df["provider"] = "smartfren"
+
     all_df = pd.concat(
         [telkom_df, xl_df, indosat_df, smartfren_df], axis=0
     ).reset_index(drop=True)
