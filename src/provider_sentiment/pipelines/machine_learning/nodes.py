@@ -92,6 +92,6 @@ def evaluate_model(y_pred: pd.Series, y_test: pd.Series):
     """
     score = f1_score(y_test.squeeze(), y_pred)
     logger = logging.getLogger(__name__)
-    logger.info(f"Model has a F1-Score of {score*100:.3f} % on test data.")
+    logger.info(f"Model has a F1-Score of {score*100:.3f} % on test data...")
 
     return score
