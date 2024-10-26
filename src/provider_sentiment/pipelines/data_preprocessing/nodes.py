@@ -197,9 +197,7 @@ def stemmer(texts: str):
 
 
 def load_kamus_alay():
-    slang_df = pd.read_csv(
-        "/mnt/c/Users/hi/work/project/sentiment-provider-app/colloquial-indonesian-lexicon-v3.csv"
-    )
+    slang_df = pd.read_csv("colloquial-indonesian-lexicon-v3.csv")
     return slang_df[["slang", "formal"]].drop_duplicates()
 
 

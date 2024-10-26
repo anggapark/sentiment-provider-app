@@ -9,5 +9,7 @@ notebook
 scikit-learn~=1.5.1; python_version >= "3.9"
 scikit-learn<=1.4.0,>=1.0; python_version < "3.9"
 nltk
-mpstemmer @ git+https://github.com/ariaghora/mpstemmer.git@main  # git+https://github.com/ariaghora/mpstemmer.git
-python-levenshtein-0.26.0
+mpstemmer @ git+https://github.com/ariaghora/mpstemmer.git@master  # git+https://github.com/ariaghora/mpstemmer.git
+python-levenshtein
+psycopg2-binary
+psycopg2

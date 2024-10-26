@@ -1,30 +1,77 @@
+# telkom_df:
+#   type: pandas.CSVDataset
+#   filepath: data/01_raw/MyTelkomsel-v2.csv
+
+# xl_df:
+#   type: pandas.CSVDataset
+#   filepath: data/01_raw/MyXL-v2.csv
+
+# indosat_df:
+#   type: pandas.CSVDataset
+#   filepath: data/01_raw/MyIM3-v2.csv
+
+# smartfren_df:
+#   type: pandas.CSVDataset
+#   filepath: data/01_raw/MySF-v2.csv
+######################################################################
 telkom_df:
-  type: pandas.CSVDataset
-  filepath: data/01_raw/MyTelkomsel-v2.csv
+  type: pandas.SQLTableDataset
+  credentials: source_credentials
+  table_name: telkom_db
+  save_args:
+    if_exists: replace
 
 xl_df:
-  type: pandas.CSVDataset
-  filepath: data/01_raw/MyXL-v2.csv
+  type: pandas.SQLTableDataset
+  credentials: source_credentials
+  table_name: xl_db
+  save_args:
+    if_exists: replace
 
 indosat_df:
-  type: pandas.CSVDataset
-  filepath: data/01_raw/MyIM3-v2.csv
+  type: pandas.SQLTableDataset
+  credentials: source_credentials
+  table_name: indosat_db
+  save_args:
+    if_exists: replace
 
 smartfren_df:
-  type: pandas.CSVDataset
-  filepath: data/01_raw/MySF-v2.csv
-
-indo-lexicon:
-  type: pandas.CSVDataset
-  filepath: data/01_raw/colloquial-indonesian-lexicon-v3.csv
+  type: pandas.SQLTableDataset
+  credentials: source_credentials
+  table_name: smartfren_db
+  save_args:
+    if_exists: replace
+######################################################################
 
 app_review_df:
   type: pandas.CSVDataset
   filepath: data/02_intermediate/all_df.csv
 
+# preprocessed_df:
+#   type: pandas.CSVDataset
+#   filepath: data/03_primary/preprocessed_df.csv
+
 preprocessed_df:
-  type: pandas.CSVDataset
-  filepath: data/03_primary/preprocessed_df.csv
+  type: provider_sentiment.utils.DTypedSqlTableDataSet
+  table_name: reviews_db
+  save_args:
+    if_exists: replace
+    dtype:
+      reviewId: sqlalchemy.dialects.postgresql.VARCHAR
+      userName: sqlalchemy.dialects.postgresql.VARCHAR
+      userImage: sqlalchemy.dialects.postgresql.VARCHAR
+      content: sqlalchemy.dialects.postgresql.TEXT
+      score: sqlalchemy.dialects.postgresql.INTEGER
+      thumbsUpCount: sqlalchemy.dialects.postgresql.INTEGER
+      reviewCreatedVersion: sqlalchemy.dialects.postgresql.VARCHAR
+      at: sqlalchemy.dialects.postgresql.VARCHAR
+      replyContent: sqlalchemy.dialects.postgresql.TEXT
+      repliedAt: sqlalchemy.dialects.postgresql.VARCHAR
+      appVersion: sqlalchemy.dialects.postgresql.VARCHAR
+      sentiment: sqlalchemy.dialects.postgresql.INTEGER
+      provider: sqlalchemy.dialects.postgresql.VARCHAR
+      clean_text: sqlalchemy.dialects.postgresql.TEXT
+  credentials: destination_credentials
 
 X_train:
   type: pandas.CSVDataset
