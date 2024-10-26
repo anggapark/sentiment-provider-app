@@ -4,7 +4,7 @@ FROM $BASE_IMAGE as runtime-environment
 # install project requirements
 RUN python -m pip install -U "pip>=21.2"
 COPY requirements.txt /tmp/requirements.txt
-RUN apt-get update && apt-get install -y build-essential && apt-get install -y libpq-dev 
+RUN apt-get update && apt-get install -y gcc && apt-get install -y libpq-dev 
 RUN apt-get install -y git && rm -rf /var/lib/apt/lists/*
 RUN pip install --no-cache-dir -r /tmp/requirements.txt && rm -f /tmp/requirements.txt
 
