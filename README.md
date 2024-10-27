@@ -6,13 +6,13 @@ Sentiment analysis project to analyze user reviews of mobile applications used f
 
 ## Tech stacks
 
-| Framework/Technologies       | Roles                                                                         |
-| ---------------------------- | ----------------------------------------------------------------------------- |
-| Kedro                        | Structuring data engineering and data science pipelines                       |
-| PostgreSQL                   | Serves as a data lake for raw data and a data warehouse for preprocessed data |
-| Docker                       | Containerize the entire project                                               |
-| Apache Airflow (In-progress) | Schedule workflows as DAGs                                                    |
-| Tableau                      | Creating visual dashboards and reports                                        |
+| Framework/Technologies | Roles                                                                         |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| Kedro                  | Structuring data engineering and data science pipelines                       |
+| PostgreSQL             | Serves as a data lake for raw data and a data warehouse for preprocessed data |
+| Docker                 | Containerize the entire project                                               |
+| Apache Airflow         | Schedule workflows as DAGs                                                    |
+| Tableau                | Creating visual dashboards and reports                                        |
 
 <!-- ## Rules and guidelines
 
