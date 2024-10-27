@@ -4,7 +4,7 @@ import pickle
 import joblib
 from fastapi import FastAPI
 from pydantic import BaseModel
-from preprocessing import (
+from .preprocessing import (
     preprocessing_sentence,
 )
 from sklearn.metrics import f1_score
@@ -14,7 +14,7 @@ app = FastAPI()
 
 # load trained model
 with open(
-    "/mnt/c/Users/hi/work/project/sentiment-provider-app/provider-sentiment/data/06_models/clf.pickle/2024-10-20T09.46.57.785Z/clf.pickle",
+    "/mnt/c/Users/hi/work/project/sentiment-provider-app/data/06_models/clf.pickle/2024-10-25T09.40.20.771Z/clf.pickle",
     "rb",
 ) as file:
     model = pickle.load(file)
