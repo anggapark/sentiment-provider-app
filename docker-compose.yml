@@ -58,7 +58,11 @@ services:
     networks:
       - pulsaproj-net
     volumes:
-      - .:/app  # Mount the current directory to /app in the container for development
+      # - .:/app  # Mount the current directory to /app in the container for development
+      - ./conf/:/app/conf 
+      - ./data/:/app/data
+      - ./src/:/app/src
+      - ./pyproject.toml:/app/pyproject.toml
     depends_on:
       - source_postgres
       - destination_postgres
@@ -90,8 +94,12 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - .:/opt # kedro dir
+      - ./airflow/dags:/opt/airflow/dags
       - ./extract:/opt/airflow/extract # extract dir
+      - ./conf/:/opt/conf 
+      - ./data/:/opt/data
+      - ./src/:/opt/src
+      - ./pyproject.toml:/opt/pyproject.toml
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - LOAD_EX=n
@@ -121,9 +129,13 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
+      # - .:/opt # kedro dir
       - ./airflow/dags:/opt/airflow/dags
       - ./extract:/opt/airflow/extract # extract dir
-      - .:/opt # kedro dir
+      - ./conf/:/opt/conf 
+      - ./data/:/opt/data
+      - ./src/:/opt/src
+      - ./pyproject.toml:/opt/pyproject.toml
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - LOAD_EX=n
