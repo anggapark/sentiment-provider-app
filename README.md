@@ -90,7 +90,7 @@ docker-compose down -v
    "text": "aplikasi ini bagus tapi sinyalnya jelek dan kadang lemot"
    }'
    ```
-   you should receive JSON respons:
+   you should receive JSON response:
    ```json
    { "Sentiment": "Negative" }
    ```
