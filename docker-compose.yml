@@ -2,7 +2,7 @@ version: '3'
 
 services:
   source_postgres:
-    image: postgres:15
+    image: postgres:15-alpine
     ports:
       - '5433:5432'
     networks:
@@ -19,7 +19,7 @@ services:
       - ./data/01_raw/MyTelkomsel-v2.csv:/docker-entrypoint-initdb.d/data/MyTelkomsel-v2.csv
 
   destination_postgres:
-    image: postgres:15
+    image: postgres:15-alpine
     ports: 
       - '5434:5432'
     networks:
@@ -29,19 +29,21 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secret
   
+  # store airflow metadata
   postgres:
-    image: postgres:15
+    image: postgres:15-alpine
     networks:
       - pulsaproj-net
     environment:
       - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
+      - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=airflow
 
   extraction:
     build:
       context: ./extract # Directory containing the Dockerfile and to_lake.py
       dockerfile: Dockerfile # Name of the Dockerfile, if it's something other than "Dockerfile", specify here
+    image: to_lake:latest
     command: [ "python", "to_lake.py" ]
     networks:
       - pulsaproj-net
@@ -50,8 +52,9 @@ services:
 
   kedro_pipeline:
     build:
-      context: . # Directory containing the Dockerfile and to_lake.py
-      dockerfile: Dockerfile # Name of the Dockerfile, if it's something other than "Dockerfile", specify here
+      context: .
+      dockerfile: Dockerfile 
+    image: kedro-pipeline:latest
     networks:
       - pulsaproj-net
     volumes:
@@ -61,78 +64,77 @@ services:
       - destination_postgres
       - extraction
 
-  # init-airflow:
-  #   image: apache/airflow:latest
-  #   depends_on:
-  #     - postgres
-  #   networks:
-  #     - pulsaproj-net
-  #   environment:
-  #     - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-  #   command: >
-  #     bash -c "airflow db init && 
-  #             airflow users create --username anggapark --password secret --firstname angga --lastname park --role Admin --email anggapark@gmail.com"
+  init-airflow:
+    image: apache/airflow:latest
+    depends_on:
+      - postgres
+    networks:
+      - pulsaproj-net
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://admin:secret@postgres/airflow
+    command: >
+      bash -c "airflow db init && 
+              airflow users create --username anggapark --password secret --firstname angga --lastname wibowo --role Admin --email anggapark@gmail.com"
 
-  # webserver:
-  #   build:
-  #     context: .
-  #     dockerfile: dags/Dockerfile
-  #   user: root
-  #   depends_on:
-  #     - postgres
-  #     - source_postgres
-  #     - destination_postgres
-  #   networks:
-  #     - pulsaproj-net
-  #   extra_hosts:
-  #     - "host.docker.internal:host-gateway"
-  #   volumes:
-  #     - ./dags:/opt/dags # airflow dir
-  #     - ./extract:/opt/airflow/extract # extract dir
-  #     - .:/opt/provider-sentiment # kedro dir
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   environment:
-  #     - LOAD_EX=n
-  #     - EXECUTOR=Local
-  #     - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-  #     - AIRFLOW_CONN_SOURCE_POSTGRES=postgresql://postgres:secret@source_postgres:5433/source_db
-  #     - AIRFLOW_CONN_DESTINATION_POSTGRES=postgres://postgres:secret@destination_postgres:5434/destination_db
-  #     - AIRFLOW__CORE__FERNET_KEY=plIipb9RU3-3wJ1UNaAtqVNJrqFEks1-dGbJM34EW7U=
-  #     - AIRFLOW__WEBSERVER__DEFAULT_USER_USERNAME=airflow
-  #     - AIRFLOW__WEBSERVER__DEFAULT_USER_PASSWORD=password
-  #     - AIRFLOW_WWW_USER_USERNAME=airflow
-  #     - AIRFLOW_WWW_USER_PASSWORD=password
-  #     - AIRFLOW__WEBSERVER__SECRET_KEY=secret
-  #   ports:
-  #     - "8080:8080"
-  #   command: webserver
+  webserver:
+    build:
+      context: .
+      dockerfile: airflow/Dockerfile
+    user: root
+    depends_on:
+      - postgres
+      - source_postgres
+      - destination_postgres
+    networks:
+      - pulsaproj-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - .:/opt # kedro dir
+      - ./extract:/opt/airflow/extract # extract dir
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - LOAD_EX=n
+      - EXECUTOR=Local
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://admin:secret@postgres/airflow
+      - AIRFLOW_CONN_SOURCE_POSTGRES=postgresql://postgres:secret@source_postgres:5433/source_db
+      - AIRFLOW_CONN_DESTINATION_POSTGRES=postgres://postgres:secret@destination_postgres:5434/destination_db
+      - AIRFLOW__CORE__FERNET_KEY=plIipb9RU3-3wJ1UNaAtqVNJrqFEks1-dGbJM34EW7U=
+      - AIRFLOW__WEBSERVER__DEFAULT_USER_USERNAME=anggapark
+      - AIRFLOW__WEBSERVER__DEFAULT_USER_PASSWORD=secret
+      - AIRFLOW_WWW_USER_USERNAME=anggapark
+      - AIRFLOW_WWW_USER_PASSWORD=secret
+      - AIRFLOW__WEBSERVER__SECRET_KEY=secret
+    ports:
+      - "8080:8080"
+    command: webserver
 
-  # scheduler:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   user: root
-  #   depends_on:
-  #     - postgres
-  #   networks:
-  #     - pulsaproj-net
-  #   extra_hosts:
-  #     - "host.docker.internal:host-gateway"
-  #   volumes:
-  #     - ./airflow/dags:/opt/airflow/dags
-  #     - ./elt_script:/opt/airflow/elt_script
-  #     - ./provider-sentiment:/provider-sentiment
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   environment:
-  #     - LOAD_EX=n
-  #     - EXECUTOR=Local
-  #     - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-  #     - AIRFLOW_CONN_DESTINATION_POSTGRES=postgres://postgres:secret@destination_postgres:5434/destination_db
-  #     - AIRFLOW__CORE__FERNET_KEY=plIipb9RU3-3wJ1UNaAtqVNJrqFEks1-dGbJM34EW7U=
-  #     - AIRFLOW__WEBSERVER__SECRET_KEY=secret
-  #     - AIRFLOW_WWW_USER_USERNAME=airflow
-  #     - AIRFLOW_WWW_USER_PASSWORD=password
-  #   command: scheduler
+  scheduler:
+    build:
+      context: .
+      dockerfile: airflow/Dockerfile
+    user: root
+    depends_on:
+      - postgres
+    networks:
+      - pulsaproj-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./extract:/opt/airflow/extract # extract dir
+      - .:/opt # kedro dir
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - LOAD_EX=n
+      - EXECUTOR=Local
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://admin:secret@postgres/airflow
+      - AIRFLOW_CONN_DESTINATION_POSTGRES=postgres://postgres:secret@destination_postgres:5434/destination_db
+      - AIRFLOW__CORE__FERNET_KEY=plIipb9RU3-3wJ1UNaAtqVNJrqFEks1-dGbJM34EW7U=
+      - AIRFLOW__WEBSERVER__SECRET_KEY=secret
+      - AIRFLOW_WWW_USER_USERNAME=anggapark
+      - AIRFLOW_WWW_USER_PASSWORD=secret
+    command: scheduler
 
 networks:
   pulsaproj-net:

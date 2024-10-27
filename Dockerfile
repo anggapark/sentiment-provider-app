@@ -27,5 +27,4 @@ COPY --chown=${KEDRO_UID}:${KEDRO_GID} . .
 
 EXPOSE 8888
 
-ENTRYPOINT ["kedro"]
-CMD ["run"]
+CMD ["kedro", "run"]
