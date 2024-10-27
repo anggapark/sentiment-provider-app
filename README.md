@@ -60,13 +60,40 @@ pip install -r requirements.txt
    http://localhost:8080/
    ```
 
-Stop service from running to exit
+How to stop service from running:
 
 ```
 docker-compose down -v
 ```
 
 -v = Remove named volumes declared in the "volumes" section of the Compose file and anonymous volumes attached to containers
+
+## How to Access API
+
+1. Change to deploy directory
+
+   ```
+   cd deploy
+   ```
+
+2. Run the API
+   ```
+   uvicorn api:app --reload
+   ```
+3. Test the API
+   ```bash
+   curl -X 'POST' \
+   'http://127.0.0.1:8000/predict' \
+   -H 'accept: application/json' \
+   -H 'Content-Type: application/json' \
+   -d '{
+   "text": "aplikasi ini bagus tapi sinyalnya jelek dan kadang lemot"
+   }'
+   ```
+   you should receive JSON respons:
+   ```json
+   { "Sentiment": "Negative" }
+   ```
 
 ## ETL Pipelines
 
