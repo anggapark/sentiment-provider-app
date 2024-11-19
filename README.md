@@ -4,7 +4,15 @@
 
 Sentiment analysis project to analyze user reviews of mobile applications used for cellular operators, that is MyTelkomsel, MyXL, MyIM3, and MySF (Smartfren), by scraping data from the Google Play Store. The focus is on performing sentiment analysis using natural language processing (NLP) techniques to understand user satisfaction and identify common issues.
 
-## Tech stacks
+## Goals
+
+1. **Sentiment Classification**: To classify reviews about each providers app into categories such as positive or negative, giving a clear picture of customer satisfaction.
+
+2. **Identify Key Issues**: To identify common complaints, praises, or suggestions shared by customers, helping each operator understand the issues that need immediate attention or improvement.
+
+3. **Competitor Comparison**: To compare sentiment scores between the four providers, allowing for a better understanding of public perception and brand image relative to each other.
+
+## Tech Stacks
 
 | Framework/Technologies | Roles                                                                         |
 | ---------------------- | ----------------------------------------------------------------------------- |
@@ -12,6 +20,8 @@ Sentiment analysis project to analyze user reviews of mobile applications used f
 | PostgreSQL             | Serves as a data lake for raw data and a data warehouse for preprocessed data |
 | Docker                 | Containerize the entire project                                               |
 | Apache Airflow         | Schedule workflows as DAGs                                                    |
+| Scikit-learn           | TF-idf vectorizer and support vector machine                                  |
+| PyTorch                | Construct LSTM model & training indoBERT                                      |
 | Tableau                | Creating visual dashboards and reports                                        |
 
 <!-- ## Rules and guidelines
@@ -143,5 +153,12 @@ The Extract-Transform-Load pipeline are:
     - Remove empty string after preprocessing
 
 3.  Load
+
     - Store transformed data in postgres as data warehouse
     - Data in data warehouse can be used for dashboard and machine learning
+
+4.  Machine Learning
+    </br>Comparing several model to get the best result:
+    - Support Vector Machine (K-fold cross validation & grid search hyperparameter tuning)
+    - LSTM (PyTorch)
+    - IndoBERT transformer model
