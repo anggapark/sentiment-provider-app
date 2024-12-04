@@ -159,6 +159,16 @@ The Extract-Transform-Load pipeline are:
 
 4.  Machine Learning
     </br>Comparing several model to get the best result:
+
     - Support Vector Machine (K-fold cross validation & grid search hyperparameter tuning)
     - LSTM (PyTorch)
     - IndoBERT transformer model
+    - Gemini LLM
+
+      | Model             | F1 Scores (%) |
+      | ----------------- | ------------- |
+      | SVM               | 82.353        |
+      | SVM (Grid Search) | 87.850        |
+      | LSTM              | 82.393        |
+      | IndoBERT          | 97.48         |
+      | Gemini LLM        | 93.913        |
