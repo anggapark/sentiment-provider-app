@@ -159,3 +159,5 @@ session_store.db
 dataset/
 
 .telemetry
+
+provider-app-sentiment.ipynb
